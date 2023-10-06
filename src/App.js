@@ -1,7 +1,7 @@
-import Task from './components/Tasks';
 import './App.css';
-import React, { useState } from 'react';
+import Task from './components/Tasks';
 import AddTaskForm from './components/Form';
+import React, {useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -35,6 +35,20 @@ function App() {
     deadline: ""
   });
 
+
+  const formSubmitHandler = (formData) => {
+    const tasks = [...taskState.tasks];
+    formData.id = uuidv4();
+    tasks.push(formData);
+    setTaskState({ tasks });
+  }
+
+  const priorityBackgroundColors = {
+    High: 'red',
+    Medium: 'yellow',
+    Low: 'green',
+  };
+
   const formChangeHandler = (event) => {
     let form = {...formState};
 
@@ -53,21 +67,9 @@ function App() {
     }
     setFormState(form);
   }
-  const formSubmitHandler = (event) => {
-    event.preventDefault();
-
-    const tasks = [...taskState.tasks];
-    const form = {...formState};
-
-    form.id = uuidv4();
-    
-    tasks.push(form);
-    setTaskState({tasks});
-  }
 
   return (
     <div className="container">
-       {/* App Header */}
        <Container component="main">
         <Typography
           component="h1"
@@ -86,8 +88,8 @@ function App() {
           Tasky
         </Typography>
       </Container>
-      {/* End App Header */}
-       {/* Task Card Grid */}
+      
+
        <Container maxWidth="md" component="main">
         <Grid container spacing={5} alignItems="flex-top" justifyContent="center">
           {taskState.tasks.map((task, index) => (
@@ -96,16 +98,16 @@ function App() {
                 description={task.description}
                 deadline={task.deadline}
                 done={task.done}
+                priority={task.priority}
                 key={task.id}
                 markDone = {() => doneHandler(index)}
                 deleteTask = {() => deleteHandler(index)}
+                priorityBackgroundColors={priorityBackgroundColors}
               />
           ))}
         </Grid>
       </Container>
-      {/* End Task Card Grid */}
 
-      {/* Footer - Add Task Form */}
       <Container
         component="footer"
         sx={{

@@ -1,18 +1,47 @@
-import React from "react";
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import React, { useState } from "react";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { Select } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+
 
 const AddTaskForm = (props) => {
+  const prioritySetting = ["Low", "Medium", "High"];
+  
+  const [formData, setFormData] = useState({
+    title: "",
+    deadline: "",
+    priority: "Low",
+    description: "",
+  });
 
-  return (
+  const handleChange = (event) => {
+    const { name, value} = event.target;
+    setFormData({...formData, [name]: value});
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    props.submit(formData);
+    setFormData({
+      title: "",
+      deadline: "",
+      priority: "Low",
+      description: "",
+    });
+  };
+
+  return(
+    <div>
     <Box
-      component="form"
+      component = "form"
       sx={{
         '& .MuiOutlinedInput-root': { m: 1, width: '30ch' },
       }}
-      onSubmit={props.submit}>
-
+      onSubmit={handleSubmit}
+      >
+      
       <div>
         <TextField
           required
@@ -20,7 +49,8 @@ const AddTaskForm = (props) => {
           name="title"
           label="Task Title"
           InputLabelProps={{ shrink: true }}
-          onChange={(event) => props.change(event)}
+          value={formData.title}
+          onChange={handleChange}
         />
       </div>
 
@@ -31,8 +61,25 @@ const AddTaskForm = (props) => {
           label="Deadline"
           InputLabelProps={{ shrink: true }}
           type="date"
-          onChange={(event) => props.change(event)}
+          value={formData.deadline}
+          onChange={handleChange}
         />
+      </div>
+
+      <div>
+        <Select
+          required
+          name="priority"
+          label="Priority"
+          value={formData.priority}
+          onChange={handleChange}
+          >
+            {prioritySetting.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
       </div>
 
       <div>
@@ -43,7 +90,8 @@ const AddTaskForm = (props) => {
           InputLabelProps={{ shrink: true }}
           multiline
           rows={4}
-          onChange={(event) => props.change(event)}
+          value={formData.description}
+          onChange={handleChange}
         />
       </div>
 
@@ -63,7 +111,8 @@ const AddTaskForm = (props) => {
       </div>
 
     </Box>
-  )
+    </div>
+  );
 };
 
 export default AddTaskForm;
